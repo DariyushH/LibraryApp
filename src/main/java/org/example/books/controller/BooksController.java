@@ -3,30 +3,44 @@ package org.example.books.controller;
 import org.example.books.model.Book;
 import org.example.books.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 @Component
 public class BooksController {
+
+    private final MessageSource messageSource;
     private final BookService bookService;
     Scanner scanner = new Scanner(System.in);
+    Locale locale;
 
     @Autowired
-    public BooksController(BookService bookService) {
+    public BooksController(BookService bookService, MessageSource messageSource) {
         this.bookService = bookService;
+        this.messageSource =messageSource;
     }
 
 
     public void start() throws IOException {
+        System.out.println("Choose language (en/ru): ");
+        String language = scanner.nextLine();
+        if ("ru".equalsIgnoreCase(language)) {
+            locale = new Locale("ru", "RU");
+        } else {
+            locale = new Locale("en", "US");
+        }
+
         while (true) {
-            System.out.println("Выбор действия:");
-            System.out.println("Нажмите 1 чтобы вывести список книг");
-            System.out.println("Нажмите 2 чтобы  создать новую книгу");
-            System.out.println("Нажмите 3 отредактировать книгу");
-            System.out.println("Нажмите 4 удалить книгу");
+            System.out.println(messageSource.getMessage("action.message", null, locale));
+            System.out.println(messageSource.getMessage("select1.message", null, locale));
+            System.out.println(messageSource.getMessage("select2.message", null, locale));
+            System.out.println(messageSource.getMessage("select3.message", null, locale));
+            System.out.println(messageSource.getMessage("select4.message", null, locale));
 
 
             int select = scanner.nextInt();
@@ -60,48 +74,48 @@ public class BooksController {
     }
 
     public void createBook() throws IOException {
-        System.out.println("Введите id книги ");
+        System.out.println(messageSource.getMessage("bookID.message", null, locale));
         int id = scanner.nextInt();
         scanner.nextLine();
-        System.out.println("Введите название книги ");
+        System.out.println(messageSource.getMessage("bookName.message", null, locale));
         String name = scanner.nextLine();
 
-        System.out.println("Введите автора книги ");
+        System.out.println(messageSource.getMessage("bookAuthor.message", null, locale));
         String author = scanner.nextLine();
 
-        System.out.println("Введите описание книги ");
+        System.out.println(messageSource.getMessage("bookDescription.message", null, locale));
         String description = scanner.nextLine();
 
         Book book = new Book(id, name, author, description);
 
         bookService.addBook(book);
-        System.out.println("Книга успешно добавлена ");
+        System.out.println(messageSource.getMessage("successful.message", null, locale));
 
     }
 
     public void updateBook() throws IOException {
-        System.out.println("Введите id книги ");
+        System.out.println(messageSource.getMessage("bookID.message", null, locale));
         int id = scanner.nextInt();
 
-        System.out.println("Введите новое название книги ");
+        System.out.println(messageSource.getMessage("newBookName.message", null, locale));
         String name = scanner.nextLine();
 
-        System.out.println("Введите нового автора книги ");
+        System.out.println(messageSource.getMessage("newBookAuthor.message", null, locale));
         String author = scanner.nextLine();
 
-        System.out.println("Введите новое описание книги ");
+        System.out.println(messageSource.getMessage("newBookDescription.message", null, locale));
         String description = scanner.nextLine();
 
         Book book = new Book(id, name, author, description);
 
         bookService.updateBook(id, book);
-        System.out.println("Книга успешно обновлена ");
+        System.out.println(messageSource.getMessage("successful.message", null, locale));
     }
 
     public void deleteBook() throws IOException {
-        System.out.println("Введите id книги которую хотите удалить ");
+        System.out.println(messageSource.getMessage("bookID.message", null, locale));
         int id = scanner.nextInt();
         bookService.deleteBook(id);
-        System.out.println("Книга успешно удалена ");
+        System.out.println(messageSource.getMessage("successful.message", null, locale));
     }
 }
