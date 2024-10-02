@@ -1,8 +1,9 @@
 package org.example.books.service;
 
+import org.example.books.dao.BookRepository;
 import org.example.books.model.Book;
-import org.example.books.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -10,11 +11,12 @@ import java.util.List;
 
 @Service
 public class BookService {
-
+    private final JdbcTemplate jdbcTemplate;
     private final BookRepository repository;
 
     @Autowired
-    public BookService(BookRepository repository) {
+    public BookService(JdbcTemplate jdbcTemplate, BookRepository repository) {
+        this.jdbcTemplate = jdbcTemplate;
         this.repository = repository;
     }
 
@@ -30,15 +32,14 @@ public class BookService {
     }
 
     public void deleteBook(int id) throws IOException {
-        List<Book> books = repository.getAllBooks();
-        books.remove(id);
-        repository.saveBooks(books);
+        String sql = "DELETE FROM books WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 
     public void updateBook(int id, Book updateBook) throws IOException {
-        List<Book> books = getAllBooks();
-        books.set(id, updateBook);
-        repository.saveBooks(books);
-    }
 
+        String sql = "UPDATE books SET name = ?, author = ?, description = ? WHERE id = ?";
+        jdbcTemplate.update(sql, updateBook.getName(), updateBook.getAuthor(), updateBook.getDescription(), id);
+
+    }
 }
