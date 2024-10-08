@@ -15,7 +15,7 @@ import java.util.Map;
 public class CacheAspect {
     private final Map<String, Object> cache = new HashMap<>();
 
-    @Around("execution(* org.example.books.service.*.getAllBooks(..))")
+    @Around("execution(* org.example.books.controller.*.getAllBooks(..))")
     public Object cacheResult(ProceedingJoinPoint joinPoint) throws Throwable{
         String key = generateKey(joinPoint);
         if(cache.containsKey(key)){
