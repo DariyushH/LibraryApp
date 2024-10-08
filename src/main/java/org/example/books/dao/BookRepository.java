@@ -1,47 +1,61 @@
 package org.example.books.dao;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaDelete;
+import jakarta.persistence.criteria.Root;
 import org.example.books.model.Book;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class BookRepository {
-    private final JdbcTemplate jdbcTemplate;
 
+    private final SessionFactory sessionFactory;
     @Autowired
-    public BookRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public BookRepository(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
+    @Transactional(readOnly = true)
     public List<Book> getAllBooks() throws IOException {
-        String sql = "SELECT * FROM books";
-        return jdbcTemplate.query(sql, new BookRowMapper());
+        Session session = sessionFactory.getCurrentSession();
+        List<Book> books = session.createQuery("select b from Book b", Book.class).getResultList();
+
+        return books;
     }
 
-    public void saveBooks(List<Book> books) throws IOException {
-        String sql = "INSERT INTO books (id, author, name, description) VALUES (?, ?, ?, ?)";
+    @Transactional
+    public void saveBooks(Book book) throws IOException {
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(book);
+    }
+    @Transactional
+    public void deleteBook(Long id) throws IOException {
+        Session session = sessionFactory.getCurrentSession();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaDelete<Book> delete = builder.createCriteriaDelete(Book.class);
 
-        for (Book book : books) {
-            jdbcTemplate.update(sql, book.getId(), book.getAuthor(), book.getName(), book.getDescription());
-        }
+        Root<Book> root = delete.from(Book.class);
+        delete.where(builder.equal(root.get("id"), id));
+        session.createQuery(delete).executeUpdate();
+
+    }
+    @Transactional
+    public void update(Long id, Book updateBook){
+        Session session = sessionFactory.getCurrentSession();
+        Book bookToBeUpdated = session.get(Book.class, id);
+
+        bookToBeUpdated.setName(bookToBeUpdated.getName());
+        bookToBeUpdated.setAuthor(bookToBeUpdated.getAuthor());
+        bookToBeUpdated.setDescription(bookToBeUpdated.getDescription());
+
+        session.merge(updateBook);
     }
 }
 
-class BookRowMapper implements RowMapper<Book> {
-    @Override
-    public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-        Book book = new Book();
-        book.setId(rs.getInt("id"));
-        book.setName(rs.getString("name"));
-        book.setAuthor(rs.getString("author"));
-        book.setDescription(rs.getString("description"));
-        return book;
-    }
-}

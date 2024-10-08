@@ -25,7 +25,14 @@ dependencies {
     implementation ("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.0")
     implementation("org.springframework:spring-aop:5.2.9.RELEASE")
     implementation("org.springframework:spring-aspects:5.2.9.RELEASE")
+    compileOnly("org.projectlombok:lombok:1.18.34")
+    implementation ("org.hibernate:hibernate-core:5.6.15.Final")
+    implementation ("org.ehcache:ehcache:3.9.7")
+    implementation ("org.hibernate:hibernate-ehcache:5.6.15.Final")
 
+
+    implementation("org.hibernate:hibernate-core:6.6.1.Final")
+    implementation("org.springframework:spring-orm:6.1.13")
 }
 
 tasks.test {
