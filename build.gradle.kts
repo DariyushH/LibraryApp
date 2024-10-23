@@ -28,21 +28,9 @@ dependencies {
     implementation ("org.ehcache:ehcache")
     implementation ("org.ehcache:ehcache-transactions")
 
-//    implementation ("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.15.2")
-//    implementation ("org.springframework:spring-context:6.0.11")
-//    implementation ("org.slf4j:slf4j-api:2.0.7")
-//    implementation ("org.slf4j:slf4j-simple:2.0.7")
-//    testImplementation ("junit:junit:4.13.2")
-//    implementation ("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.13.0")
-//    implementation("org.springframework:spring-aop:5.2.9.RELEASE")
-//    implementation("org.springframework:spring-aspects:5.2.9.RELEASE")
-//
-//    implementation ("org.ehcache:ehcache:3.9.7")
-//    implementation ("org.hibernate:hibernate-ehcache:5.6.15.Final")
-//    implementation("org.springframework.boot:spring-boot:3.3.4")
-//
-//    implementation("org.springframework.boot:spring-boot-autoconfigure:3.3.4")
-
+    implementation("org.liquibase:liquibase-core:4.29.2")
+    implementation ("org.springframework.boot:spring-boot-starter-data-mongodb")
+    implementation("org.mongodb:mongo-java-driver:3.12.14")
 }
 
 tasks.test {
