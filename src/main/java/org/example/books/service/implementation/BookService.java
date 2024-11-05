@@ -1,4 +1,4 @@
-package org.example.books.service;
+package org.example.books.service.implementation;
 
 import org.example.books.model.Book;
 import org.example.books.repository.BookRepository;

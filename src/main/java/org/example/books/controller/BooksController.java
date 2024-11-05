@@ -3,11 +3,12 @@ package org.example.books.controller;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.books.model.Book;
 import org.example.books.repository.BookRepository;
-import org.example.books.service.BookService;
-import org.example.books.service.ImageService;
+import org.example.books.service.implementation.BookService;
+import org.example.books.service.implementation.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,6 +76,12 @@ public class BooksController {
         try (InputStream inputStream = resource.getInputStream()) {
             FileCopyUtils.copy(inputStream, response.getOutputStream());
         }
+    }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole(T(org.example.books.enums.UserRole).ROLE_ADMIN)")
+    public String admin() {
+        return "ADMIN PAGE";
     }
 }
 
