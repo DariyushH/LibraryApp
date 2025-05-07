@@ -2,13 +2,21 @@ package org.example.books.main;
 
 import org.example.books.config.BookAppConfig;
 import org.example.books.controller.BooksController;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.Locale;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BookAppConfig.class);
+        MessageSource messageSource = context.getBean("messageSource", org.springframework.context.MessageSource.class);
+
         BooksController controller = context.getBean(BooksController.class);
 
         controller.start();
+
+
     }
 }
