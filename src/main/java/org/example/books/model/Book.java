@@ -1,5 +1,6 @@
 package org.example.books.model;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -19,7 +20,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "title")
-    private String name;
+    private String title;
     @Column(name = "author")
     private String author;
     @Column(name = "description")

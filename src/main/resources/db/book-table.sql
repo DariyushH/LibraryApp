@@ -7,4 +7,12 @@ CREATE TABLE books
     file_id    VARCHAR(255)
 );
 
+CREATE TABLE users
+(
+    ID          BIGSERIAL PRIMARY KEY,
+    USERNAME    VARCHAR(255) NOT NULL UNIQUE,
+    PASSWORD    VARCHAR(255) NOT NULL,
+    ROLE       VARCHAR(255)
+)
+
 
