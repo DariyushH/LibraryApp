@@ -15,12 +15,12 @@ import java.util.Arrays;
 public class LogAspect {
     private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
-    @Before("execution(* org.example.books.service.*.*(..))")
+    @Before("execution(* org.example.books.controller.*.*(..))")
     public void logBefore() {
         logger.info("Method called");
     }
 
-    @Around("execution(* org.example.books.service.*.*(..))")
+    @Around("execution(* org.example.books.controller.*.*(..))")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
         logger.info("Method {} called with parameters: {}", joinPoint.getSignature(), Arrays.toString(joinPoint.getArgs()));
         Object result = joinPoint.proceed();

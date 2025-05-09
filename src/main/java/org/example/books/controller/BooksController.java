@@ -1,5 +1,6 @@
 package org.example.books.controller;
 
+import org.example.books.dao.BookRepository;
 import org.example.books.model.Book;
 import org.example.books.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,13 @@ import java.util.Scanner;
 public class BooksController {
 
     private final MessageSource messageSource;
-    private final BookService bookService;
+    private final BookRepository bookRepository;
     Scanner scanner = new Scanner(System.in);
     Locale locale;
 
     @Autowired
-    public BooksController(BookService bookService, MessageSource messageSource) {
-        this.bookService = bookService;
+    public BooksController(BookService bookService, MessageSource messageSource, BookRepository bookRepository) {
+        this.bookRepository = bookRepository;
         this.messageSource =messageSource;
     }
 
@@ -68,15 +69,15 @@ public class BooksController {
     }
 
     public void getAll() throws IOException {
-        List<Book> allBooks = bookService.getAllBooks();
+        List<Book> allBooks = bookRepository.getAllBooks();
         allBooks.forEach(System.out::println);
 
     }
 
     public void createBook() throws IOException {
-        System.out.println(messageSource.getMessage("bookID.message", null, locale));
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        //System.out.println(messageSource.getMessage("bookID.message", null, locale));
+        //int id = scanner.nextInt();
+        //scanner.nextLine();
         System.out.println(messageSource.getMessage("bookName.message", null, locale));
         String name = scanner.nextLine();
 
@@ -86,16 +87,16 @@ public class BooksController {
         System.out.println(messageSource.getMessage("bookDescription.message", null, locale));
         String description = scanner.nextLine();
 
-        Book book = new Book(id, name, author, description);
+        Book book = new Book(name, author, description);
 
-        bookService.addBook(book);
+        bookRepository.saveBooks(book);
         System.out.println(messageSource.getMessage("successful.message", null, locale));
 
     }
 
-    public void updateBook() throws IOException {
+    public void updateBook() {
         System.out.println(messageSource.getMessage("bookID.message", null, locale));
-        int id = scanner.nextInt();
+        Long id = scanner.nextLong();
 
         System.out.println(messageSource.getMessage("newBookName.message", null, locale));
         String name = scanner.nextLine();
@@ -106,16 +107,19 @@ public class BooksController {
         System.out.println(messageSource.getMessage("newBookDescription.message", null, locale));
         String description = scanner.nextLine();
 
-        Book book = new Book(id, name, author, description);
+        Book book = new Book(name, author, description);
 
-        bookService.updateBook(id, book);
+        bookRepository.update(id, book);
         System.out.println(messageSource.getMessage("successful.message", null, locale));
+
     }
 
     public void deleteBook() throws IOException {
         System.out.println(messageSource.getMessage("bookID.message", null, locale));
-        int id = scanner.nextInt();
-        bookService.deleteBook(id);
+        Long id = scanner.nextLong();
+        bookRepository.deleteBook(id);
         System.out.println(messageSource.getMessage("successful.message", null, locale));
     }
+
+
 }
