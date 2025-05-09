@@ -30,7 +30,5 @@ public class BookRepository {
     public void saveBooks(List<Book> books) throws IOException {
         csvMapper.writerFor(Book.class).with(schema).writeValues(csvFile).writeAll(books);
     }
-
-
 }
 
