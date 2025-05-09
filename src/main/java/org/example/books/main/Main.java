@@ -5,9 +5,6 @@ import org.example.books.controller.BooksController;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import java.util.Locale;
-import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) throws Exception {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BookAppConfig.class);
