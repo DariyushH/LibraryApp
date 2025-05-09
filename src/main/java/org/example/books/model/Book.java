@@ -24,4 +24,6 @@ public class Book {
     private String author;
     @Column(name = "description")
     private String description;
+    @Column(name = "fileId")
+    private String fileId;
 }

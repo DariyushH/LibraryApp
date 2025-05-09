@@ -1,21 +1,35 @@
 package org.example.books.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.books.model.Book;
+import org.example.books.repository.BookRepository;
 import org.example.books.service.BookService;
+import org.example.books.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.List;
 
 
-@Controller
+@RestController
 @RequestMapping("/books")
 public class BooksController {
     private final BookService bookService;
+    private final ImageService imageService;
+
+    private final BookRepository bookRepository;
     @Autowired
-    public BooksController(BookService bookService) {
+    public BooksController(BookService bookService, ImageService imageService, BookRepository bookRepository) {
         this.bookService = bookService;
+        this.imageService = imageService;
+        this.bookRepository = bookRepository;
     }
 
     @GetMapping()
@@ -42,4 +56,27 @@ public class BooksController {
     public void deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
     }
+
+    @PostMapping("/{id}/upload-image")
+    public void uploadImage(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) throws IOException {
+        imageService.uploadImage(file, id);
+    }
+
+    @GetMapping("/{id}/download-image")
+    public void downloadImage(@PathVariable("id") Long id, HttpServletResponse response) throws IOException {
+        String fileId = bookRepository.findById(id).orElseThrow().getFileId();
+        GridFsResource resource = imageService.downloadImage(fileId);
+
+        String filename = URLEncoder.encode(resource.getFilename(), "UTF-8");
+
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + filename);
+        response.setContentType("application/octet-stream");
+
+        try (InputStream inputStream = resource.getInputStream()) {
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
+        }
+    }
 }
+
+
+
